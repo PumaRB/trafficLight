@@ -9,34 +9,17 @@ import UIKit
 
 class ViewController: UIViewController {
 
-    
     @IBOutlet weak var redSignal: UIView!
     @IBOutlet weak var yellowSignal: UIView!
     @IBOutlet weak var greenSignal: UIView!
-
     
     @IBOutlet weak var switchButtonStyle: UIButton!
     
-    
-    func makeCircle(view: UIView) {
-//        view.contentMode = UIView.ContentMode.scaleToFill
-        view.layer.cornerRadius = view.frame.height / 2
-        print(view.frame.height)
-        print(view.frame.size.height / 2)
-        view.layer.masksToBounds = true
-//        view.clipsToBounds = true
-        
-    }
     override func viewDidAppear(_ animated: Bool) {
         makeCircle(view: redSignal)
         makeCircle(view: yellowSignal)
         makeCircle(view: greenSignal)
     }
-
-//    override func layoutSubviews() {
-//        super.layoutSubviews()
-//
-//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,12 +29,41 @@ class ViewController: UIViewController {
         greenSignal.alpha = 0.5
     }
     
+    enum ActiveColors {
+        case red
+        case yellow
+        case green
+        case none
+    }
+    
+    var activeColors = ActiveColors.none
+    
+    func makeCircle(view: UIView) {
+        view.layer.cornerRadius = view.frame.height / 2
+        view.layer.masksToBounds = true
+    }
     
     @IBAction func switchButton() {
         switchButtonStyle.configuration = setupButton(with: "Next")
-    
-        
+        switch activeColors {
+        case .green:
+            redSignal.alpha = 1
+            greenSignal.alpha = 0.5
+            activeColors = .red
+        case .red:
+            yellowSignal.alpha = 1
+            redSignal.alpha = 0.5
+            activeColors = .yellow
+        case .yellow:
+            yellowSignal.alpha = 0.5
+            greenSignal.alpha = 1
+            activeColors = .green
+        case .none:
+            redSignal.alpha = 1
+            activeColors = .red
+        }
     }
+    
     private func setupButton(with title: String) -> UIButton.Configuration {
         var buttonConfiguration = UIButton.Configuration.filled()
         buttonConfiguration.title = title
